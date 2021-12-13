@@ -3,7 +3,8 @@ const mysql = require('mysql2');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const e = require('express');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000
+
 const app = express();
 
 app.use(express.static('public'));
