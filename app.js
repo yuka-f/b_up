@@ -15,6 +15,15 @@ const connection = mysql.createConnection({
   database: 'beauty_app'
 });
 
+connection.connect((error) => {
+  if (error) {
+      console.error('Database Connect Error:' + error);
+      return;
+  } else {
+      console.log('Database Connection Success: id=' + connection.threadId);
+  }
+});
+
 app.use(
   session({
     secret: 'my_secret_key',
