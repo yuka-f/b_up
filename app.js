@@ -10,19 +10,19 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: false}));
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'sqlbaby171819',
-  database: 'beauty_app'
-});
-
 // const connection = mysql.createConnection({
-//   host: 'us-cdbr-east-05.cleardb.net',
-//   user: 'bc98c4b5065d52',
-//   password: '0370b0a0',
-//   database: 'heroku_da8eeee8dfe85c4'
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'sqlbaby171819',
+//   database: 'beauty_app'
 // });
+
+const connection = mysql.createConnection({
+  host: 'us-cdbr-east-05.cleardb.net',
+  user: 'bc98c4b5065d52',
+  password: '0370b0a0',
+  database: 'heroku_da8eeee8dfe85c4'
+});
 
 connection.connect((error) => {
   if (error) {
@@ -72,110 +72,6 @@ app.get('/index',(req,res) =>{
   );
 });
 
-// ===================お客様使用============================================
-// ＠-----------新規登録------------＠
-// ---ルーティング----
-// app.get('/signup',(req,res) => {
-//   res.render('signup.ejs',{errors:[]});
-// });
-// ---ユーザー登録処理---
-// app.post('/signup',
-//   (req, res, next) => {
-//     // 入力値の空チェック
-//     const username = req.body.nickname;
-//     const fullname = req.body.fullname;
-//     const password = req.body.password;
-//     const errors = [];
-
-//     if(username === ''){
-//       errors.push('ニックネームが空です');
-//     }
-//     if(fullname === ''){
-//       errors.push('フルネームが空です');
-//     }
-//     if(password === ''){
-//       errors.push('パスワードが空です');
-//     }
-//     console.log(errors);
-
-//     if(errors.length > 0){
-//       res.render('signup.ejs',{errors:errors})
-//     }else{
-//       next();
-//     }
-//   },
-//   (req,res,next) => {
-//     // ニックネーム重複チェック
-//     const username = req.body.nickname;
-//     const errors = [];
-
-//     connection.query(
-//       'SELECT * FROM users WHERE username = ?',
-//       [username],
-//       (error, results) => {
-//         if (results.length > 0) {
-//           errors.push('ユーザー登録に失敗しました');
-//           res.render('signup.ejs',{errors:errors});
-//         } else {
-//             next();
-//           }
-//       }
-//     );
-//   },
-//   (req,res) =>{
-//       // ユーザー登録
-//       const username = req.body.nickname;
-//       const fullname = req.body.fullname;
-//       const password = req.body.password;
-//       bcrypt.hash(password,10,(error,hash) =>{
-//         connection.query(
-//           'INSERT INTO users (username, password, fullname) VALUES (?, ?, ?)',
-//           [username,hash,fullname],
-//           (error, results) => {
-//             req.session.userId = results.insertId;
-//             req.session.username = username;
-        
-//             res.redirect('/index');
-//           }
-//         );
-//       });
-      
-//     }
-// );
-
-// // ＠---------ログイン-------------＠
-// // ---ルーティング---
-// app.get('/login',(req,res) => {
-//   res.render('login.ejs');
-// })
-// // ---ユーザー認証処理---
-// app.post('/login',(req,res) => {
-//   const nickname = req.body.nickname;
-//   connection.query(
-//     'SELECT * FROM users WHERE username = ?',
-//     [nickname],
-//     (error, results) => {
-//       if(results.length > 0){
-//         const plain = req.body.password;
-//         const hash = results[0].password;
-        
-//         bcrypt.compare(plain,hash,(error,isEqual)=>{
-//           if(isEqual){
-//             req.session.userId = results[0].id;
-//             req.session.username = results[0].username;
-//             res.redirect('/index');
-//           }else{
-//               res.redirect('/login');
-//             }
-//         });
-//       }else{
-//           res.redirect('/login');
-//         }
-//     }
-//   )
-  
-// });
-
 app.get('/new', 
 
 (req, res) => {
@@ -198,9 +94,6 @@ app.post('/create',
     }else{
       next();
     }
-  
-  
-  
   
   },
   (req,res) => {
@@ -249,13 +142,6 @@ app.post('/update/:id',(req,res) => {
   )
 });
 
-// app.get('/logout',(req,res) => {
-//   req.session.destroy((error) => {
-//     res.redirect('/')
-//   })
-// });
-
-
-// var server=app.listen(port,function() {
-//   console.log("app running on port 8080"); });
-app.listen(PORT);
+var server=app.listen(port,function() {
+  console.log("app running on port 8080"); });
+// app.listen(PORT);
