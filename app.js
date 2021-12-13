@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const e = require('express');
-const PORT = process.env.PORT || 5000;
+var PORT = process.env.PORT || 8080;
 
 const app = express();
 
@@ -372,4 +372,5 @@ app.get('/stafflogout',(req,res) => {
   })
 });
 
-app.listen(PORT);
+var server=app.listen(port,function() {
+  console.log("app running on port 8080"); });
