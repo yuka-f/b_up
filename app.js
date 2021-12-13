@@ -10,6 +10,13 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: false}));
 
+// const connection = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'sqlbaby171819',
+//   database: 'beauty_app'
+// });
+
 const connection = mysql.createConnection({
   host: 'us-cdbr-east-05.cleardb.net',
   user: 'bc98c4b5065d52',
@@ -49,16 +56,16 @@ app.use((req,res,next) => {
 });
 
 // =========＠---スタッフログイン状態維持---＠======================================
-app.use((req,res,next) => {
-  if(req.session.staffId === undefined){
-    console.log("ログインしていません");
-    res.locals.staffLoggedIn = false;
-  }else{
-    console.log("ログインしています");
-    res.locals.staffLoggedIn = true;
-  }
-  next();
-});
+// app.use((req,res,next) => {
+//   if(req.session.staffId === undefined){
+//     console.log("ログインしていません");
+//     res.locals.staffLoggedIn = false;
+//   }else{
+//     console.log("ログインしています");
+//     res.locals.staffLoggedIn = true;
+//   }
+//   next();
+// });
 
 // ==================ルーティング===============================
 app.get('/',(req,res) => {
@@ -80,106 +87,106 @@ app.get('/index',(req,res) =>{
 
 // ＠---------ログイン-------------＠
 // ---ルーティング---
-app.get('/stafflogin',(req,res) => {
-  res.render('stafflogin.ejs');
-});
-// ---ユーザー認証処理---
-app.post('/stafflogin',(req,res) => {
-  const staffnick = req.body.staffnick;
-  connection.query(
-    'SELECT * FROM staff WHERE nickname = ?',
-    [staffnick],
-    (error, results) => {
-      if(results.length > 0){
-        const plain = req.body.staffpass;
-        const hash = results[0].password;
-        bcrypt.compare(plain,hash,(error,isEqual)=>{
-          if(isEqual){
-            req.session.staffId = results[0].id;
-            req.session.staffname = results[0].staffname;
-            res.redirect('/index');
-          }else{
+// app.get('/stafflogin',(req,res) => {
+//   res.render('stafflogin.ejs');
+// });
+// // ---ユーザー認証処理---
+// app.post('/stafflogin',(req,res) => {
+//   const staffnick = req.body.staffnick;
+//   connection.query(
+//     'SELECT * FROM staff WHERE nickname = ?',
+//     [staffnick],
+//     (error, results) => {
+//       if(results.length > 0){
+//         const plain = req.body.staffpass;
+//         const hash = results[0].password;
+//         bcrypt.compare(plain,hash,(error,isEqual)=>{
+//           if(isEqual){
+//             req.session.staffId = results[0].id;
+//             req.session.staffname = results[0].staffname;
+//             res.redirect('/index');
+//           }else{
             
-            res.redirect('/stafflogin');
-          }
-        });
-      }else{
-        res.redirect('/stafflogin');
-      }
-    }
-  );
-});
-// ＠-----------新規登録------------＠
-// ---ルーティング----
-app.get('/staffsign',(req,res) => {
-  res.render('staffsign.ejs',{errors:[]});
-});
-// ---ユーザー登録処理---
-app.post('/staffsign',
-  (req,res,next) => {
-    // 入力空チェック
-    console.log('空入力チェック');
-    const staffnick = req.body.staffnick;
-    const staffname = req.body.staffname;
-    const staffpass = req.body.staffpass;
-    const errors = [];
+//             res.redirect('/stafflogin');
+//           }
+//         });
+//       }else{
+//         res.redirect('/stafflogin');
+//       }
+//     }
+//   );
+// });
+// // ＠-----------新規登録------------＠
+// // ---ルーティング----
+// app.get('/staffsign',(req,res) => {
+//   res.render('staffsign.ejs',{errors:[]});
+// });
+// // ---ユーザー登録処理---
+// app.post('/staffsign',
+//   (req,res,next) => {
+//     // 入力空チェック
+//     console.log('空入力チェック');
+//     const staffnick = req.body.staffnick;
+//     const staffname = req.body.staffname;
+//     const staffpass = req.body.staffpass;
+//     const errors = [];
 
-    if(staffnick === ''){
-      errors.push('ユーザー名が空です');
-    }
-    if(staffname === ''){
-      errors.push('メールアドレスが空です');
-    }
-    if(staffpass === ''){
-      errors.push('パスワードが空です');
-    }
-    console.log(errors);
+//     if(staffnick === ''){
+//       errors.push('ユーザー名が空です');
+//     }
+//     if(staffname === ''){
+//       errors.push('メールアドレスが空です');
+//     }
+//     if(staffpass === ''){
+//       errors.push('パスワードが空です');
+//     }
+//     console.log(errors);
 
-    if(errors.length > 0){
-      res.render('staffsign.ejs',{errors:errors});
-    }else{
-      next();
-    }
-  },
-  (req,res,next) => {
-    console.log('にっくネーム重複チェック');
-    const staffnick = req.body.staffnick;
-    const errors = [];
+//     if(errors.length > 0){
+//       res.render('staffsign.ejs',{errors:errors});
+//     }else{
+//       next();
+//     }
+//   },
+//   (req,res,next) => {
+//     console.log('にっくネーム重複チェック');
+//     const staffnick = req.body.staffnick;
+//     const errors = [];
 
-    connection.query(
-      'SELECT * FROM staff WHERE nickname = ?',
-      [staffnick],
-      (error,results) => {
-        if(results.length > 0) {
-          errors.push('登録失敗');
-          res.render('staffsign.ejs',{errors:errors});
-        }else{
-          next();
-        }
-      }
-    )
-  },
-  (req,res) => {
-    console.log('ユーザー登録');
-    // ユーザー登録
-    // ---ejsで受け取った値を定数に代入
-    const staffnick = req.body.staffnick;
-    const staffname = req.body.staffname;
-    const staffpass = req.body.staffpass;
-    // ---staffテーブルにデータ登録
-    bcrypt.hash(staffpass,10,(error,hash) =>{
-      connection.query(
-        'INSERT INTO staff (nickname, staffname, password) VALUES (?, ?, ?)',
-        [staffnick, staffname, hash],
-        (error, results) => {
-          req.session.staffId = results.insertId;
-          req.session.staffnick = staffnick;
-          res.redirect('/index');
-        }
-      );
-    });
-  }
-);
+//     connection.query(
+//       'SELECT * FROM staff WHERE nickname = ?',
+//       [staffnick],
+//       (error,results) => {
+//         if(results.length > 0) {
+//           errors.push('登録失敗');
+//           res.render('staffsign.ejs',{errors:errors});
+//         }else{
+//           next();
+//         }
+//       }
+//     )
+//   },
+//   (req,res) => {
+//     console.log('ユーザー登録');
+//     // ユーザー登録
+//     // ---ejsで受け取った値を定数に代入
+//     const staffnick = req.body.staffnick;
+//     const staffname = req.body.staffname;
+//     const staffpass = req.body.staffpass;
+//     // ---staffテーブルにデータ登録
+//     bcrypt.hash(staffpass,10,(error,hash) =>{
+//       connection.query(
+//         'INSERT INTO staff (nickname, staffname, password) VALUES (?, ?, ?)',
+//         [staffnick, staffname, hash],
+//         (error, results) => {
+//           req.session.staffId = results.insertId;
+//           req.session.staffnick = staffnick;
+//           res.redirect('/index');
+//         }
+//       );
+//     });
+//   }
+// );
 
 
 
@@ -374,3 +381,4 @@ app.get('/stafflogout',(req,res) => {
 
 var server=app.listen(port,function() {
   console.log("app running on port 8080"); });
+// app.listen(PORT);
