@@ -11,18 +11,13 @@ app.use(express.static('public'));
 app.use(express.urlencoded({extended: false}));
 
 // const connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'root',
-//   password: 'sqlbaby171819',
-//   database: 'beauty_app'
+//   host: '',
+//   user: 't',
+//   password: '',
+//   database: '
 // });
 
-const connection = mysql.createConnection({
-  host: 'us-cdbr-east-05.cleardb.net',
-  user: 'bc98c4b5065d52',
-  password: '0370b0a0',
-  database: 'heroku_da8eeee8dfe85c4'
-});
+
 
 connection.connect((error) => {
   if (error) {
